@@ -1,63 +1,95 @@
-import 'package:counter_app/style.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void main(){
+void main() {
   runApp(MyApp());
 }
-class MyApp extends StatelessWidget{
+
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "CounterApp",
-      home: HomePage(),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('News Feed'),
+        ),
+        body: ImageFeed(),
+      ),
     );
   }
 }
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+
+class ImageFeed extends StatelessWidget {
+  final List<String> imageUrls = [
+    "https://via.placeholder.com/150",
+    "https://via.placeholder.com/150",
+    "https://via.placeholder.com/150",
+    "https://via.placeholder.com/150",
+    "https://via.placeholder.com/150",
+    "https://via.placeholder.com/150",
+    "https://via.placeholder.com/150",
+    "https://via.placeholder.com/150",
+    "https://via.placeholder.com/150",
+    "https://via.placeholder.com/150",
+    // Add more image URLs here
+  ];
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  Widget build(BuildContext context) {
+    // Determine the device orientation
+    final orientation = MediaQuery.of(context).orientation;
+
+    return orientation == Orientation.portrait
+        ? PortraitImageFeed(imageUrls: imageUrls)
+        : LandscapeImageFeed(imageUrls: imageUrls);
+  }
 }
 
-class _HomePageState extends State<HomePage> {
-  var counterN=0;
+class PortraitImageFeed extends StatelessWidget {
+  final List<String> imageUrls;
+
+  PortraitImageFeed({required this.imageUrls});
+
   @override
-
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Counter App Bar"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Sum=0"),
-            TextFormField(decoration: TextfieldStyle("First Number")),
-            SizedBox(height: 20,),
-            TextFormField(decoration: TextfieldStyle("Second Number"),),
-            SizedBox(height: 20,),
-            Container(
-              width: 300,
-              height: 50,
-              child: ElevatedButton(onPressed: (){}, child: Text("Add")),
-            )
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: (){
-          setState(() {
-            counterN=counterN+2;
-          });
+    return ListView.builder(
+      itemCount: imageUrls.length,
+      itemBuilder: (context, index) {
+        return Card(
+          child: Container(
+            width: double.infinity,
+            height: 150,
+            padding: EdgeInsets.all(3),
+            child: Image.network(imageUrls[index]),
+          ),
+        );
+      },
+    );
+  }
+}
 
-        },
-      ),
+class LandscapeImageFeed extends StatelessWidget {
+  final List<String> imageUrls;
 
-      );
+  LandscapeImageFeed({required this.imageUrls});
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 1.0,
+      ),
+      itemCount: imageUrls.length,
+      itemBuilder: (context, index) {
+        return Card(
+          child: Container(
+            width: double.infinity,
+            height: 150,
+            padding: EdgeInsets.all(8.0),
+            child: Image.network(imageUrls[index]),
+          ),
+        );
+      },
+    );
   }
 }
